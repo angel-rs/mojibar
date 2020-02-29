@@ -2,8 +2,8 @@ const {
   app,
   Menu,
   ipcMain,
-  globalShortcut,
   nativeTheme,
+  globalShortcut,
 } = require('electron')
 const isMac = /darwin/.test(process.platform)
 const { menubar } = require('menubar');
@@ -16,11 +16,10 @@ const mb = menubar({
   dir: path.join(__dirname, '/app'),
   width: 440,
   height: 330,
-  icon: path.join(__dirname, '/app/assets/icons/Icon-Template.png'),
+  icon: path.join(__dirname, '/app/assets/icons/favicon.png'),
   preloadWindow: true,
   windowPosition: 'topRight',
   browserWindow: {
-    alwaysOnTop: true,
     webPreferences: {
       preload: path.join(__dirname, '/app/preload.js')
     }
@@ -29,17 +28,17 @@ const mb = menubar({
 })
 
 mb.app.on('show', function () {
-  console.log('show')
+  if (isDev) console.log('show')
   mb.window.webContents.send('show')
 })
 
 mb.app.on('will-quit', function () {
-  console.log('will quit')
+  if (isDev) console.log('will quit')
   globalShortcut.unregisterAll()
 })
 
 mb.app.on('activate', function () {
-  console.log('activate')
+  if (isDev) console.log('activate')
   mb.showWindow()
 })
 
@@ -102,24 +101,24 @@ const template = [
 ]
 
 mb.on('ready', function ready () {
-  mb.showWindow()
-  console.log('ready')
-  // Build default menu for text editing and devtools. (gone since electron 0.25.2)
-  // var menu = Menu.buildFromTemplate(template)
-  // Menu.setApplicationMenu(menu)
-  //
-  // mb.window.on('hide', function () {
-  //   mb.window.webContents.send('fetch')
-  // })
-})
+  if (isDev) {
+    console.log('ready')
+    mb.showWindow()
+  }
 
-mb.on('after-create-window', function () {
-  mb.window.openDevTools()
+  // Build default menu for text editing and devtools. (gone since electron 0.25.2)
+  var menu = Menu.buildFromTemplate(template)
+  Menu.setApplicationMenu(menu)
+
+  mb.window.on('hide', function () {
+    mb.window.webContents.send('fetch')
+  })
 })
 
 // when receive the abort message, close the app
 ipcMain.on('abort', function () {
-  console.log('abort')
+  if (isDev) console.log('abort')
+
   if (isMac) {
     mb.app.hide()
   } else {
@@ -127,6 +126,10 @@ ipcMain.on('abort', function () {
     mb.window.blur()
     mb.hideWindow()
   }
+})
+
+mb.on('after-create-window', function () {
+  if (isDev) mb.window.openDevTools()
 })
 
 

@@ -106,7 +106,7 @@ var togglePreferencePanel = function () {
       html += '</div>'
     })
     html += '<label></label><button type="submit">Save</button>'
-    html += `<code class="version">mojibar@${require('../package.json').version}</code>`
+    html += `<code class="version">emojibar@${window.version}</code>`
     if (localStorage.getItem('emojilibVersion')) html += `<code class="version">emojilib@${localStorage.getItem('emojilibVersion')}</code>`
     html += '</form>'
     panel.innerHTML += html
