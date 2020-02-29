@@ -1,29 +1,29 @@
 /* global localStorage, fetch */
-var emojilib = JSON.parse(localStorage.getItem('emojilib')) || require('emojilib').lib
-var emojikeys = JSON.parse(localStorage.getItem('emojikeys')) || require('emojilib').ordered
-var modifiers = require('emojilib').fitzpatrick_scale_modifiers
-var clipboard = require('electron').clipboard
-var ipc = require('electron').ipcRenderer
-var index = buildIndex()
-var indexKeys = Object.keys(index)
-var emojikeyIndexTable = buildEmojikeyIndexTable()
-var searching = false
-var searchInput = document.querySelector('.js-search')
-var preference = JSON.parse(localStorage.getItem('preference'))
-var directions = {
+const emojilib = JSON.parse(localStorage.getItem('emojilib')) || window.emojilib.lib
+const emojikeys = JSON.parse(localStorage.getItem('emojikeys')) || window.emojilib.ordered
+const clipboard = window.clipboard
+const index = buildIndex()
+const indexKeys = Object.keys(index)
+const emojikeyIndexTable = buildEmojikeyIndexTable()
+const directions = {
   37: 'left',
   38: 'up',
   39: 'right',
   40: 'down'
 }
+var ipc = window.ipc
+var modifiers = window.emojilib.fitzpatrick_scale_modifiers
+var searchInput = document.querySelector('.js-search')
+var preference = JSON.parse(localStorage.getItem('preference'))
+let searching = false
 
 function fetchAndUpdateLocalCache () {
   if (!navigator.onLine) return
-  var expireTime = localStorage.getItem('emojilibExpireTime')
+  const expireTime = localStorage.getItem('emojilibExpireTime')
   if (expireTime && Number(expireTime) > new Date().getTime()) return
-  var version = '^2.0.0'
-  var emojilibLib = `https://unpkg.com/emojilib@${version}/emojis.json`
-  var emojilibOrdered = `https://unpkg.com/emojilib@${version}/ordered.json`
+  const version = '^2.0.0'
+  const emojilibLib = `https://unpkg.com/emojilib@${version}/emojis.json`
+  const emojilibOrdered = `https://unpkg.com/emojilib@${version}/ordered.json`
 
   fetch(emojilibLib).then(function (res) { return checkIfNewVersion(res) }).then(function (newData) {
     // Fetch only once per day
@@ -38,7 +38,7 @@ function fetchAndUpdateLocalCache () {
   })
 
   function checkIfNewVersion (res) {
-    var fetchedVersion = res.url.match(/@([\d.]+)/)[1]
+    const fetchedVersion = res.url.match(/@([\d.]+)/)[1]
     if (fetchedVersion !== localStorage.getItem('emojilibVersion')) {
       localStorage.setItem('emojilibVersion', fetchedVersion)
       return res.json()

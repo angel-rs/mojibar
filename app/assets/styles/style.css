@@ -19,6 +19,7 @@ button {
   top: 15px;
   left: 15px;
   font-family: AppleColorEmoji;
+  margin-right: 15px;
 }
 
 .search {
@@ -32,6 +33,10 @@ button {
   z-index: 1;
   top: 0;
   -webkit-appearance: textfield;
+}
+
+.js-search {
+  margin-left: 15px;
 }
 
 .search:focus {

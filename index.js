@@ -1,57 +1,51 @@
-var { app, ipcMain, globalShortcut, Menu } = require('electron')
-var isMac = /darwin/.test(process.platform)
-var menubar = require('menubar')
-var isDev = require('electron-is-dev')
-var path = require('path')
-var mb = menubar({
+const {
+  app,
+  Menu,
+  ipcMain,
+  globalShortcut,
+  nativeTheme,
+} = require('electron')
+const isMac = /darwin/.test(process.platform)
+const { menubar } = require('menubar');
+const isDev = require('electron-is-dev')
+const path = require('path')
+
+console.log(`isDev: ${isDev}`)
+
+const mb = menubar({
   dir: path.join(__dirname, '/app'),
   width: 440,
   height: 330,
-  icon: path.join(__dirname, '/app/Icon-Template.png'),
+  icon: path.join(__dirname, '/app/assets/icons/Icon-Template.png'),
   preloadWindow: true,
   windowPosition: 'topRight',
+  browserWindow: {
+    alwaysOnTop: true,
+    webPreferences: {
+      preload: path.join(__dirname, '/app/preload.js')
+    }
+  },
   alwaysOnTop: true
 })
 
-mb.on('show', function () {
+mb.app.on('show', function () {
+  console.log('show')
   mb.window.webContents.send('show')
 })
 
 mb.app.on('will-quit', function () {
+  console.log('will quit')
   globalShortcut.unregisterAll()
 })
 
 mb.app.on('activate', function () {
+  console.log('activate')
   mb.showWindow()
 })
 
-// when receive the abort message, close the app
-ipcMain.on('abort', function () {
-  if (isMac) {
-    mb.app.hide()
-  } else {
-    // Windows and Linux
-    mb.window.blur()
-    mb.hideWindow()
-  }
-})
-
-// update shortcuts when preferences change
-ipcMain.on('update-preference', function (evt, pref, initialization) {
-  registerShortcut(pref['open-window-shortcut'], initialization)
-
-  // Make packaged app (not dev app) start at login
-  if (!isDev) {
-    app.setLoginItemSettings({
-      openAtLogin: pref['open-at-login'],
-      openAsHidden: true
-    })
-  }
-})
-
-var template = [
+const template = [
   {
-    label: 'Mojibar',
+    label: 'Emojibar',
     submenu: [
       {
         label: 'Undo',
@@ -108,13 +102,45 @@ var template = [
 ]
 
 mb.on('ready', function ready () {
+  mb.showWindow()
+  console.log('ready')
   // Build default menu for text editing and devtools. (gone since electron 0.25.2)
-  var menu = Menu.buildFromTemplate(template)
-  Menu.setApplicationMenu(menu)
+  // var menu = Menu.buildFromTemplate(template)
+  // Menu.setApplicationMenu(menu)
+  //
+  // mb.window.on('hide', function () {
+  //   mb.window.webContents.send('fetch')
+  // })
+})
 
-  mb.window.on('hide', function () {
-    mb.window.webContents.send('fetch')
-  })
+mb.on('after-create-window', function () {
+  mb.window.openDevTools()
+})
+
+// when receive the abort message, close the app
+ipcMain.on('abort', function () {
+  console.log('abort')
+  if (isMac) {
+    mb.app.hide()
+  } else {
+    // Windows and Linux
+    mb.window.blur()
+    mb.hideWindow()
+  }
+})
+
+
+// update shortcuts when preferences change
+ipcMain.on('update-preference', function (evt, pref, initialization) {
+  registerShortcut(pref['open-window-shortcut'], initialization)
+
+  // Make packaged app (not dev app) start at login
+  if (!isDev) {
+    app.setLoginItemSettings({
+      openAtLogin: pref['open-at-login'],
+      openAsHidden: true
+    })
+  }
 })
 
 // Register a shortcut listener.

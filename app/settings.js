@@ -1,7 +1,7 @@
 /* global localStorage, alert */
 var preference
-var ipc = require('electron').ipcRenderer
-var modifiers = require('emojilib').fitzpatrick_scale_modifiers
+var ipc = window.ipc
+var modifiers = window.emojilib.fitzpatrick_scale_modifiers
 
 var defaultPreference = {
   'open-window-shortcut': 'ctrl+shift+space',
@@ -18,6 +18,8 @@ var preferenceNames = {
 }
 
 var applyPreferences = function (preference, initialization) {
+  if (typeof preference === 'undefined') return;
+
   localStorage.setItem('preference', JSON.stringify(preference))
 
   ipc.send('update-preference', preference, initialization)

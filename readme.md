@@ -1,33 +1,19 @@
-# Mojibar [![Travis CI build status](https://img.shields.io/travis/muan/mojibar.svg)](https://travis-ci.org/muan/mojibar) [![JS Standard Style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard) [![Greenkeeper badge](https://badges.greenkeeper.io/muan/mojibar.svg)](https://greenkeeper.io/)
+# Emojibar
 
-A menubar app adaptation of [Emoji searcher](http://emoji.muan.co).
+A fork of [Mojibar](https://github.com/muan/mojibar) for Linux
 
-![screenshot](https://cloud.githubusercontent.com/assets/1153134/12583324/7756a38a-c485-11e5-9388-3b5c61743905.gif)
+## Changes compared to Mojibar
+
+- Updated all dependencies, from `electron@^1.6.0` to `electron@^8.02` ⬆️
+- Improved Searchbox UI
+- New settings page
+  - Added support for dark mode (according to system ui preferences)
+
+## Notes
+
+Support for Windows and OSX is not mantained, if wanna help as a contributor, Issues & PRs are welcome!
 
 ## Install
-
-### OSX
-
-#### :triangular_flag_on_post: Download and drag
-
-[Download the latest version for Mac on the releases page](https://github.com/muan/mojibar/releases) (and drag into your apps folder.)
-
-#### :triangular_flag_on_post: Install using [Homebrew Cask](https://caskroom.github.io/)
-
-```bash
-# Make sure homebrew knows about the latest mojibar
-$ brew update && brew upgrade brew-cask
-# Install mojibar
-$ brew cask install mojibar
-```
-
-After installation, find Mojibar in your apps folder or search Mojibar in spotlight. Mojibar will appear in your tray at the top right corner of your screen.
-
-To upgrade mojibar installed from brew-cask to a newer version:
-
-```
-$ brew cask reinstall mojibar
-```
 
 ### Linux
 
