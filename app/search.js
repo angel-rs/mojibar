@@ -280,3 +280,16 @@ function jumpto (destination) {
     searchInput.focus()
   }
 }
+
+document.addEventListener('DOMContentLoaded', function () {
+  var theme = 'light'
+
+  try {
+    theme = JSON.parse(window.localStorage.getItem('preference')).theme
+  } catch (error) {}
+
+  if (!document.body.classList.contains(theme)) {
+    document.body.classList.add(theme)
+    document.body.classList.remove(theme === 'light' ? 'dark' : 'light')
+  }
+})

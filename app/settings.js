@@ -2,19 +2,22 @@
 var preference
 var ipc = window.ipc
 var modifiers = window.emojilib.fitzpatrick_scale_modifiers
+var themes = ['light', 'dark']
 
 var defaultPreference = {
   'open-window-shortcut': 'ctrl+shift+space',
   'emoji-size': '20',
   'open-at-login': false,
-  'skin-tone-modifier': ''
+  'skin-tone-modifier': '',
+  'theme': 'dark'
 }
 
 var preferenceNames = {
   'open-window-shortcut': 'Mojibar shortcut',
   'emoji-size': 'Emoji font size',
   'open-at-login': 'Start Mojibar at login',
-  'skin-tone-modifier': 'Skin tone modifier'
+  'skin-tone-modifier': 'Skin tone modifier',
+  'theme': 'System theme',
 }
 
 var applyPreferences = function (preference, initialization) {
@@ -32,14 +35,18 @@ var applyPreferences = function (preference, initialization) {
 }
 
 var savePreference = function (event) {
-  event.preventDefault()
+  try {
+    event.preventDefault()
 
-  Object.keys(preference).forEach(function (key) {
-    var el = document.getElementById(key)
-    preference[key] = el.nodeName === 'INPUT' && el.type === 'checkbox' ? el.checked : el.value
-  })
+    Object.keys(preference).forEach(function (key) {
+      var el = document.getElementById(key)
+      preference[key] = el.nodeName === 'INPUT' && el.type === 'checkbox' ? el.checked : el.value
+    })
 
-  applyPreferences(preference)
+    applyPreferences(preference)
+  } catch (error) {
+    console.error(error)
+  }
 }
 
 if (localStorage.getItem('preference')) {
@@ -90,10 +97,20 @@ var togglePreferencePanel = function () {
         html += '<label for="' + key + '">'
         html += preferenceNames[key]
         html += '</label>'
-        html += '<select id="' + key + '">>'
+        html += '<select id="' + key + '">'
         html += `<option value="">None</option>`
         modifiers.forEach(function (modifier) {
           html += `<option value="${modifier}" ${preference[key] === modifier ? 'selected' : ''}>${modifier}</option>`
+        })
+        html += '</select>'
+        html += '</label>'
+      } else if (key === 'theme') {
+        html += '<label for="' + key + '">'
+        html += preferenceNames[key]
+        html += '</label>'
+        html += '<select id="' + key + '">'
+        themes.forEach(function (theme) {
+          html += `<option value="${theme}" ${preference[key] === theme ? 'selected' : ''}>${theme}</option>`
         })
         html += '</select>'
         html += '</label>'
